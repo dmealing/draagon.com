@@ -16,21 +16,41 @@ Company website for Draagon at https://draagon.com. Static site hosted on Cloudf
 
 ```
 draagon.com/
-├── index.html      # Main page
-├── style.css       # Styles
-├── favicon.svg     # Site icon
-├── 404.html        # Custom 404 page
-├── deploy.sh       # Deploy to Cloudflare Pages
-├── CLAUDE.md       # This file
-├── README.md       # Project readme
-└── .gitignore      # Git ignores
+├── index.html              # Main page
+├── style.css               # Styles
+├── favicon.svg             # Browser tab icon (dragon head)
+├── 404.html                # Custom 404 page
+├── deploy.sh               # Deploy to Cloudflare Pages
+├── images/
+│   ├── logo.svg            # Dragon head logo (light, for dark bg)
+│   ├── logo_head-480x365.png   # Dragon head PNG (small)
+│   └── logo_head-960x730.png   # Dragon head PNG (large)
+├── CLAUDE.md               # This file
+├── README.md               # Project readme
+└── .gitignore              # Git ignores
 ```
+
+## Logo
+
+The dragon head logo comes from the draagon-ai project (`~/Development/draagon-ai/images/`). The original uses navy blue (#1a417a) and medium blue (#0b72b9). For the dark-themed website:
+- `images/logo.svg` — recolored to light purple (#8b9eff) and light blue (#6db3f8) for dark backgrounds
+- `favicon.svg` — recolored to site accent (#6d5aff) and purple (#a855f7)
+
+Original source files:
+- `~/Development/draagon-ai/images/logo_head.jpg` — original JPG
+- `~/Development/draagon-ai/images/logo_head-stroke-and-fill.svg` — SVG with white stroke outline
+- `~/Development/draagon-ai/platform/web/src/assets/draagon-logo.svg` — clean SVG (navy/blue)
 
 ## Deployment
 
 Run `./deploy.sh` to deploy to Cloudflare Pages. Credentials are in `~/.config/cloudflare/credentials`.
 
+```bash
+./deploy.sh                    # Deploy current files
+```
+
 Preview URL: https://draagon-com.pages.dev
+Production URL: https://draagon.com (once nameservers are updated at GoDaddy)
 
 ## Cloudflare Configuration
 
@@ -43,14 +63,26 @@ Preview URL: https://draagon-com.pages.dev
 | Always HTTPS | On |
 | Minification | HTML, CSS, JS |
 
+### Cloudflare API Access
+
+Credentials stored at `~/.config/cloudflare/credentials`:
+```
+CF_EMAIL=doug@dougmealing.com
+CF_KEY=<Global API Key>
+CF_ZONE_DRAAGON=670f5f9fa2153cce8bd47764a93020b7
+CF_ACCOUNT=330cb0efc83f8b1597896a9e85399636
+```
+
 ## DNS Records
 
-- `CNAME @ → draagon-com.pages.dev` (proxied)
-- `CNAME www → draagon-com.pages.dev` (proxied)
-- `MX` — Cloudflare Email Routing (auto-managed)
-- `TXT @ (SPF)` — `v=spf1 include:_spf.mx.cloudflare.net ~all`
-- `TXT _dmarc` — `v=DMARC1; p=reject; sp=reject; adkim=s; aspf=s`
-- `TXT cf2024-1._domainkey` — DKIM (auto-managed)
+| Type | Name | Value | Notes |
+|------|------|-------|-------|
+| CNAME | @ | draagon-com.pages.dev | Proxied |
+| CNAME | www | draagon-com.pages.dev | Proxied |
+| MX | @ | route{1,2,3}.mx.cloudflare.net | Auto-managed by Email Routing |
+| TXT | @ | v=spf1 include:_spf.mx.cloudflare.net ~all | SPF |
+| TXT | _dmarc | v=DMARC1; p=reject; sp=reject; adkim=s; aspf=s | DMARC |
+| TXT | cf2024-1._domainkey | (DKIM key) | Auto-managed |
 
 ## Email Routing
 
@@ -63,10 +95,20 @@ All email forwards to `doug@dougmealing.com`:
 
 - Repo: https://github.com/dmealing/draagon.com
 
+## Nameserver Migration
+
+**Status: Pending** — Need to update nameservers at GoDaddy:
+1. Log into GoDaddy → draagon.com → DNS → Nameservers
+2. Change from `ns03.domaincontrol.com` / `ns04.domaincontrol.com`
+3. Set to: `denver.ns.cloudflare.com` / `robin.ns.cloudflare.com`
+4. Propagation: 1-24 hours
+
+Old GoDaddy DNS had: A record → 160.153.60.102, MX → mail.draagon.com
+
 ## Future Plans
 
 - Expand content beyond placeholder
 - Add project detail pages
 - Blog/updates section
-- SEO optimization
+- SEO optimization (OpenGraph tags, structured data)
 - Set up GitHub Actions for auto-deploy on push

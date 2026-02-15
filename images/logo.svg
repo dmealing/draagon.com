@@ -9,12 +9,12 @@
 <path d="M 74.47 65.12 C 74.85 69.95 75.29 75.24 74.15 80.00 C 73.27 83.68 71.17 86.95 67.74 88.72 C 64.56 90.18 61.29 91.53 57.89 89.91 C 61.69 87.68 65.65 87.24 68.76 83.76 C 73.86 78.53 74.49 72.10 74.47 65.12 Z" id="p7" />
 </defs>
 <g>
-<use fill="#6d5aff" href="#p1" />
-<use fill="#6d5aff" href="#p2" />
-<use fill="#6d5aff" href="#p3" />
-<use fill="#6d5aff" href="#p4" />
-<use fill="#6d5aff" href="#p5" />
-<use fill="#a855f7" href="#p6" />
-<use fill="#a855f7" href="#p7" />
+<use fill="#8b9eff" href="#p1" />
+<use fill="#8b9eff" href="#p2" />
+<use fill="#8b9eff" href="#p3" />
+<use fill="#8b9eff" href="#p4" />
+<use fill="#8b9eff" href="#p5" />
+<use fill="#6db3f8" href="#p6" />
+<use fill="#6db3f8" href="#p7" />
 </g>
 </svg>
