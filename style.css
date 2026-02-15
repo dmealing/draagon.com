@@ -165,6 +165,12 @@ h2 {
     transform: translateY(-2px);
 }
 
+a.project-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
 .project-tag {
     display: inline-block;
     font-size: 0.75rem;
