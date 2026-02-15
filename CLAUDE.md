@@ -50,7 +50,7 @@ Run `./deploy.sh` to deploy to Cloudflare Pages. Credentials are in `~/.config/c
 ```
 
 Preview URL: https://draagon-com.pages.dev
-Production URL: https://draagon.com (once nameservers are updated at GoDaddy)
+Production URL: https://draagon.com
 
 ## Cloudflare Configuration
 
@@ -97,13 +97,17 @@ All email forwards to `doug@dougmealing.com`:
 
 ## Nameserver Migration
 
-**Status: Pending** — Need to update nameservers at GoDaddy:
-1. Log into GoDaddy → draagon.com → DNS → Nameservers
-2. Change from `ns03.domaincontrol.com` / `ns04.domaincontrol.com`
-3. Set to: `denver.ns.cloudflare.com` / `robin.ns.cloudflare.com`
-4. Propagation: 1-24 hours
+**Status: Complete** (2026-02-15) — Nameservers updated at GoDaddy, zone active on Cloudflare.
+- Old: `ns03.domaincontrol.com` / `ns04.domaincontrol.com` (GoDaddy)
+- New: `denver.ns.cloudflare.com` / `robin.ns.cloudflare.com` (Cloudflare)
+- Old GoDaddy DNS had: A record → 160.153.60.102, MX → mail.draagon.com
 
-Old GoDaddy DNS had: A record → 160.153.60.102, MX → mail.draagon.com
+## SSL
+
+Universal SSL certificate auto-provisioned by Cloudflare (free plan):
+- **Primary**: Google Trust Services, covers `draagon.com` + `*.draagon.com`
+- **Backup**: Let's Encrypt (standby)
+- Auto-renews before expiry
 
 ## Future Plans
 
