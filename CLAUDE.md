@@ -43,7 +43,7 @@ Original source files:
 
 ## Deployment
 
-Run `./deploy.sh` to deploy to Cloudflare Pages. Credentials are in `~/.config/cloudflare/credentials`.
+Run `./deploy.sh` to deploy to Cloudflare Pages. It fetches a scoped deploy token (`pages-deploy-draagon-com`, Account: Pages Write) from Infisical (project `deploy`, env `dev`) through `keys-axi run --only CLOUDFLARE_PAGES_TOKEN_DRAAGON_COM CLOUDFLARE_ACCOUNT_ID`, maps it to `CLOUDFLARE_API_TOKEN` for wrangler, and clears any global-key variables. wrangler is pinned in the script (`WRANGLER_VERSION`) and run through `npx`. Values are never printed.
 
 ```bash
 ./deploy.sh                    # Deploy current files
@@ -65,13 +65,7 @@ Production URL: https://draagon.com
 
 ### Cloudflare API Access
 
-Credentials stored at `~/.config/cloudflare/credentials`:
-```
-CF_EMAIL=doug@dougmealing.com
-CF_KEY=<Global API Key>
-CF_ZONE_DRAAGON=670f5f9fa2153cce8bd47764a93020b7
-CF_ACCOUNT=330cb0efc83f8b1597896a9e85399636
-```
+Deploys use only the scoped token above. Do not use the account-wide global API key for deploys.
 
 ## DNS Records
 
@@ -116,3 +110,25 @@ Universal SSL certificate auto-provisioned by Cloudflare (free plan):
 - Blog/updates section
 - SEO optimization (OpenGraph tags, structured data)
 - Set up GitHub Actions for auto-deploy on push
+
+## Disk I/O: keep throwaway data off the drives
+
+Test databases, sandboxes and temp files must not wear out the developer's drives.
+
+- **Throwaway data goes in RAM.** Put scratch files, mutation-testing sandboxes (Stryker
+  `tempDirName`) and test-only temp directories under `$DEV_SCRATCH` (fall back to the system temp
+  directory when it is unset). Delete what you create when the run ends.
+- **Test databases run on a capped tmpfs at the image's `VOLUME` path** (`postgres:18*`:
+  `/var/lib/postgresql`; `postgres:16/17` and `pgvector:*-pg17`: `/var/lib/postgresql/data`;
+  `mysql:8*`: `/var/lib/mysql`; check others with `docker image inspect -f '{{json .Config.Volumes}}'`),
+  `size=2g`, with Postgres durability off: `-c fsync=off -c synchronous_commit=off -c full_page_writes=off`.
+- **Every container you start, you remove.** Use `docker run --rm`, Testcontainers with Ryuk enabled,
+  or explicit teardown in a `finally`/`trap`. Never leave a hand-started database running after your
+  task. A database you mean to keep gets the label `dev.keep=true`.
+- **Generators and tools never rewrite a file whose bytes did not change**, write any manifest once per
+  run (not once per file), and verify drift in memory rather than by rendering everything to a temp
+  directory.
+- **Run the narrowest tests that prove the change** while iterating (one module, the affected test
+  classes); run the full suite once, before the PR.
+- **No background processes outlive the task.** Kill test watchers, dev servers and sandboxes you
+  started before you finish.
